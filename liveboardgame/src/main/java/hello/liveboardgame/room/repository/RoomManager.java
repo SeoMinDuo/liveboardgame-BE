@@ -23,7 +23,7 @@ public class RoomManager {
 
 
     @PostConstruct
-    private void init() {
+    public void init() {
         log.info("init() 실행");
         if (availableRooms.isEmpty()) {
             log.info("availableRooms가 비어있음");
@@ -57,12 +57,8 @@ public class RoomManager {
         return fullRooms.values().stream().toList().size();
     }
 
-//    public Map getFullRooms() {
-//
-//    }
-
     /**
-     * 사용가능한 방의 아이디를 반환함
+     * 사용가능한 방의 아이디를 반환
      * @return 방id
      */
     public OptionalLong getRoomId() {
