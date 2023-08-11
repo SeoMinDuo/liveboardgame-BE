@@ -1,6 +1,7 @@
 package hello.liveboardgame.room.repository;
 
 import hello.liveboardgame.room.domain.Room;
+import hello.liveboardgame.room.domain.User;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,4 +88,81 @@ public class RoomManager {
         }
     }
 
+    /**
+     * watingRooms에 해당 room이 존재하는지
+     * @param roomId
+     * @return
+     */
+    public boolean isContainsWatingRooms(Long roomId) {
+        if (waitingRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isContainsAvailableRooms(Long roomId) {
+        if (availableRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isContainsFullRooms(Long roomId) {
+        if (fullRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void enterWaitingRoom(Long roomId, User user) {
+        if (isContainsWatingRooms(roomId)) {
+            Room findRoom = waitingRooms.get(roomId);
+            List<User> roomUsers = findRoom.getUsers();
+            roomUsers.add(user);
+
+            if (roomUsers.size() == 2) {
+                waitingRooms.remove(roomId);
+                fullRooms.put(findRoom.getId(), findRoom);
+            }
+        }
+    }
+
+    public void enterAvailableRoom(Long roomId, User user) {
+
+        if (isContainsAvailableRooms(roomId)) {
+            Room findRoom = availableRooms.get(roomId);
+            List<User> roomUsers = findRoom.getUsers();
+            roomUsers.add(user);
+
+            if (roomUsers.size() == 1) {
+                availableRooms.remove(roomId);
+                waitingRooms.put(findRoom.getId(), findRoom);
+            }
+        }
+    }
+
+    public void exitFullRoom(Long roomId) {
+        if (isContainsFullRooms(roomId)) {
+            Room room = fullRooms.get(roomId);
+            room.getUsers().clear();
+
+            fullRooms.remove(room.getId());
+            availableRooms.put(room.getId(), room);
+        }
+    }
+
+    public void exitWaitingRoom(Long roomId) {
+        if (isContainsWatingRooms(roomId)) {
+            Room room = waitingRooms.get(roomId);
+            room.getUsers().clear();
+
+            waitingRooms.remove(room.getId());
+            availableRooms.put(room.getId(), room);
+        }
+    }
+
+    public Integer getRoomUserCount(Long roomId) {
+        Room findRoom = repository.findById(roomId);
+        return findRoom.getUsers().size();
+    }
 }
