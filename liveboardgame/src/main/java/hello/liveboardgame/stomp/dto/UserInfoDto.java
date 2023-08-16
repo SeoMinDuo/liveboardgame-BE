@@ -10,4 +10,11 @@ public class UserInfoDto {
     public UserInfoDto(String name) {
         this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public UserInfoDto() {
+    }
 }

@@ -1,6 +1,7 @@
 package hello.liveboardgame.stomp.controller;
 
 import hello.liveboardgame.Greeting;
+import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.service.RoomService;
 import hello.liveboardgame.stomp.dto.UserInfoDto;
 import lombok.RequiredArgsConstructor;
@@ -35,28 +36,21 @@ public class StompController {
 
     @MessageMapping("/enterRoom/{roomId}")
     @SendTo("/topic/{roomId}")
-    public Greeting enterRoomController(@DestinationVariable Long roomId, UserInfoDto userInfo) {
+    public Greeting enterRoomController(@DestinationVariable Long roomId, UserInfoDto userInfo, SimpMessageHeaderAccessor headerAccessor) {
+        String sessionId = headerAccessor.getSessionId();
+        User user = new User(sessionId, userInfo.getName(), roomId);
+
+        Integer roomUserCnt = roomService.enterRoom(roomId, user);
+
         log.info("call enterRoomController() roomId={}", roomId);
-        Integer roomUserCnt = roomService.enterRoom(roomId, userInfo);
+        log.info("enterRoomController : userInfo={}", userInfo.getName());
+        log.info("enterRoomController : sessionID={}", sessionId);
 
         if (roomUserCnt == 2) {
-            return new Greeting("게임 시작");
+            return new Greeting("start");
         }
 
 //        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
         return new Greeting("");
     }
-
-    @MessageMapping("/exitRoom/{roomId}")
-    @SendTo("/topic/{roomId}")
-    public Greeting exitRoomController(@DestinationVariable Long roomId, UserInfoDto userInfo) {
-        log.info("call exitRoomController() roomId={}", roomId);
-        roomService.exitRoom(roomId);
-        Greeting greeting = new Greeting("일단 text받긴함");
-//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
-        return greeting;
-    }
-
-
-
 }
