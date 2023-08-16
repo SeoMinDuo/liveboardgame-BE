@@ -1,8 +1,6 @@
 package hello.liveboardgame.stomp.handler;
 
 import hello.liveboardgame.room.service.RoomService;
-import hello.liveboardgame.user.repository.GameUserManager;
-import hello.liveboardgame.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -15,7 +13,6 @@ import org.springframework.messaging.MessageChannel;
 public class StompHandler implements ChannelInterceptor {
 
     private final RoomService roomService;
-    private final UserService userService;
 
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
