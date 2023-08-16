@@ -1,5 +1,6 @@
 package hello.liveboardgame.room.domain;
 
+import hello.liveboardgame.user.domain.User;
 import lombok.*;
 
 import java.util.ArrayList;
