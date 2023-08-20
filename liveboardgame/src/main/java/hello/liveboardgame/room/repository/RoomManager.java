@@ -160,6 +160,7 @@ public class RoomManager {
     public void exitFullRoom(Long roomId) {
         if (isContainsFullRooms(roomId)) {
             Room room = fullRooms.get(roomId);
+            //인게임 user 삭제
             deleteRoomUser(room);
 
             fullRooms.remove(room.getId());
@@ -170,6 +171,7 @@ public class RoomManager {
     public void exitWaitingRoom(Long roomId) {
         if (isContainsWatingRooms(roomId)) {
             Room room = waitingRooms.get(roomId);
+            //인게임 user 삭제
             deleteRoomUser(room);
 
             waitingRooms.remove(room.getId());
