@@ -1,5 +1,8 @@
 package hello.liveboardgame;
 
+import lombok.Getter;
+
+@Getter
 public class Greeting {
     private String gameState;
     private String startUser;

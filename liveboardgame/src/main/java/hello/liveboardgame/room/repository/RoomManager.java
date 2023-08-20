@@ -1,6 +1,8 @@
 package hello.liveboardgame.room.repository;
 
 import hello.liveboardgame.room.domain.Room;
+import hello.liveboardgame.user.domain.User;
+import hello.liveboardgame.user.repository.GameUserManager;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.*;
 public class RoomManager {
 
     private final RoomRepository repository;
+    private final GameUserManager gameUserManager;
 
     private static final Map<Long, Room> availableRooms = new HashMap<>();
     private static final Map<Long, Room> waitingRooms = new HashMap<>();
@@ -66,10 +69,7 @@ public class RoomManager {
         if (!waitingRooms.isEmpty()) {
             List<Room> rooms = waitingRooms.values().stream().toList();
             log.info("게임 대기방이 존재하는 경우 요청 roomId={}", rooms.get(0).getId());
-            Room room = waitingRooms.remove(rooms.get(0).getId());
-
-            fullRooms.put(room.getId(), room);
-            return OptionalLong.of(room.getId());
+            return OptionalLong.of(rooms.get(0).getId());
         } else {
             //사용가능한 방이 존재하지 않는 경우
             if (availableRooms.isEmpty()) {
@@ -80,9 +80,7 @@ public class RoomManager {
             else {
                 List<Room> rooms = availableRooms.values().stream().toList();
                 log.info("사용중인 방이 없는 경우 roomId={}", rooms.get(0).getId());
-                Room room = availableRooms.remove(rooms.get(0).getId());
-                waitingRooms.put(room.getId(), room);
-                return OptionalLong.of(room.getId());
+                return OptionalLong.of(rooms.get(0).getId());
             }
         }
     }
