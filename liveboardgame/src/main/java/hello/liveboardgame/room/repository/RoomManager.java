@@ -87,4 +87,117 @@ public class RoomManager {
         }
     }
 
+    /**
+     * watingRooms에 해당 room이 존재하는지
+     * @param roomId
+     * @return
+     */
+    public boolean isContainsWatingRooms(Long roomId) {
+        if (waitingRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isContainsAvailableRooms(Long roomId) {
+        if (availableRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isContainsFullRooms(Long roomId) {
+        if (fullRooms.containsKey(roomId)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void enterWaitingRoom(Long roomId, User user) {
+        if (isContainsWatingRooms(roomId)) {
+            Room findRoom = waitingRooms.get(roomId);
+            Integer roomUserSize = insertRoomUser(findRoom, user);
+
+            if (roomUserSize == 2) {
+                waitingRooms.remove(roomId);
+                fullRooms.put(findRoom.getId(), findRoom);
+            }
+        }
+    }
+
+    public void enterAvailableRoom(Long roomId, User user) {
+
+        if (isContainsAvailableRooms(roomId)) {
+            Room findRoom = availableRooms.get(roomId);
+            Integer roomUserSize = insertRoomUser(findRoom, user);
+
+            if (roomUserSize == 1) {
+                availableRooms.remove(roomId);
+                waitingRooms.put(findRoom.getId(), findRoom);
+            }
+        }
+    }
+
+    /**
+     * room과 GameUserManger에 user 추가
+     * @param room
+     * @param user
+     * @return room에 들어있는 user의 수
+     */
+    private Integer insertRoomUser(Room room, User user) {
+        //room정보 세팅
+        if (room.getGameId() == null) {
+            room.setGameId(UUID.randomUUID().toString());
+            room.setIsUsed(Boolean.TRUE);
+            room.setOrd(0);
+        }
+        //인게임 user collection에 추가
+        gameUserManager.save(user);
+        List<User> roomUsers = room.getUsers();
+        roomUsers.add(user);
+
+        return roomUsers.size();
+    }
+
+    public void exitFullRoom(Long roomId) {
+        if (isContainsFullRooms(roomId)) {
+            Room room = fullRooms.get(roomId);
+            deleteRoomUser(room);
+
+            fullRooms.remove(room.getId());
+            availableRooms.put(room.getId(), room);
+        }
+    }
+
+    public void exitWaitingRoom(Long roomId) {
+        if (isContainsWatingRooms(roomId)) {
+            Room room = waitingRooms.get(roomId);
+            deleteRoomUser(room);
+
+            waitingRooms.remove(room.getId());
+            availableRooms.put(room.getId(), room);
+        }
+    }
+
+    private void deleteRoomUser(Room room) {
+        //room정보 세팅
+        if (room.getGameId() != null) {
+            room.setGameId(null);
+            room.setIsUsed(Boolean.FALSE);
+            room.setOrd(0);
+        }
+        for (User user : room.getUsers()) {
+            gameUserManager.delete(user.getSessionId());
+        }
+        room.getUsers().clear();
+    }
+
+    public Integer getRoomUserCount(Long roomId) {
+        Room findRoom = repository.findById(roomId);
+        return findRoom.getUsers().size();
+    }
+
+    public Room getRoom(Long roomId) {
+        return repository.findById(roomId);
+    }
 }
