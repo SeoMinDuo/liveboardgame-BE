@@ -45,20 +45,27 @@ public class StompController {
      * @return
      */
 
-    @MessageMapping("/sendMessage")
-//    @SendTo("/topic/messages")
-    public void gameRoomResponseController(/*RoomMessage*/@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-//        log.info("id={}", message.getId());
-//        log.info("msg={}", message.getMsg());
-//        log.info("roomId={}", message.getRoomId());
-        log.info("message.text = {}", message.get("text"));
-        Greeting greeting = new Greeting("일단 text받긴함");
-        //연결된 소켓의 세션정보를 얻음
-        log.info("sessionID={}", headerAccessor.getSessionId());
-//        messagingTemplate.convertAndSend("/topic/" + message.getRoomId(), message);
-        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
-    }
+//    @MessageMapping("/sendMessage")
+////    @SendTo("/topic/messages")
+//    public void gameRoomResponseController(/*RoomMessage*/@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
+////        log.info("id={}", message.getId());
+////        log.info("msg={}", message.getMsg());
+////        log.info("roomId={}", message.getRoomId());
+//        log.info("message.text = {}", message.get("text"));
+//        Greeting greeting = new Greeting("일단 text받긴함");
+//        //연결된 소켓의 세션정보를 얻음
+//        log.info("sessionID={}", headerAccessor.getSessionId());
+////        messagingTemplate.convertAndSend("/topic/" + message.getRoomId(), message);
+//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
+//    }
 
+    /**
+     * 클라이언트 인게임 입장처리
+     * @param roomId
+     * @param userInfo
+     * @param headerAccessor
+     * @return
+     */
     @MessageMapping("/enterRoom/{roomId}")
     @SendTo("/topic/{roomId}")
     public Greeting enterRoomController(@DestinationVariable Long roomId, UserInfoDto userInfo, SimpMessageHeaderAccessor headerAccessor) {
@@ -99,4 +106,26 @@ public class StompController {
 
         return gameInfoDto;
     }
+
+    /**
+     * 클라이언트가 보낸 좌표값을 저장하고 Broadcast
+     * @param roomId
+     * @param gameInfoDto
+     * @return
+     */
+    @MessageMapping("/gameboard/{roomId}")
+    @SendTo("/topic/gameboard/{roomId}")
+    public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
+        log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
+        gameInfoService.saveGameInfo(roomId, gameInfoDto);
+
+        String user1 = "user1";
+        String user2 = "user2";
+        String name = gameInfoDto.equals(user1)? user1 : user2;
+        new GameInfoDto(gameInfoDto.getX(), gameInfoDto.getY(), name);
+
+
+        return gameInfoDto;
+    }
+
 }
