@@ -15,9 +15,8 @@ public class RoomController {
 
 
     @GetMapping("/roomId")
-    public RoomIdDto getRoomIdController(String xxxID) {
+    public RoomIdDto getRoomIdController() {
         log.info("Get:/roomId 요청");
-        log.info("xxxID={}", xxxID);
         return new RoomIdDto(roomService.getRoomId());
     }
 }
