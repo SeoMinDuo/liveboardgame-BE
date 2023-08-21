@@ -1,6 +1,8 @@
 package hello.liveboardgame.stomp.controller;
 
 import hello.liveboardgame.Greeting;
+import hello.liveboardgame.gameInfo.service.GameInfoService;
+import hello.liveboardgame.stomp.dto.GameInfoDto;
 import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.service.RoomService;
 import hello.liveboardgame.stomp.dto.UserInfoDto;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class StompController {
     private final RoomService roomService;
+    private final GameInfoService gameInfoService;
 
     /**
      * 클라이언트 인게임 입장처리
@@ -43,4 +46,26 @@ public class StompController {
 //        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
         return new Greeting("", "");
     }
+
+    /**
+     * 클라이언트가 보낸 좌표값을 저장하고 Broadcast
+     * @param roomId
+     * @param gameInfoDto
+     * @return
+     */
+    @MessageMapping("/gameboard/{roomId}")
+    @SendTo("/topic/gameboard/{roomId}")
+    public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
+        log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
+        gameInfoService.saveGameInfo(roomId, gameInfoDto);
+
+        String user1 = "user1";
+        String user2 = "user2";
+        String name = gameInfoDto.equals(user1)? user1 : user2;
+        new GameInfoDto(gameInfoDto.getX(), gameInfoDto.getY(), name);
+
+
+        return gameInfoDto;
+    }
+
 }
