@@ -46,6 +46,10 @@ public class RoomService {
 
     public void exitRoom(String sessionId) {
         User findUser = gameUserManager.findBySessionId(sessionId);
+        if (findUser == null) {
+            logRoomStatus();
+            return;
+        }
         Long findUserRoomId = findUser.getRoomId();//user가 속해있는 room의 id
 
         if (roomManager.isContainsFullRooms(findUserRoomId)) {
@@ -57,5 +61,13 @@ public class RoomService {
         } else if (roomManager.isContainsAvailableRooms(findUserRoomId)) {
             log.info("exitRoom() : 해당 Room에는 아무도 없음 roomId={}", findUserRoomId);
         }
+    }
+
+    public void logRoomStatus() {
+        log.info("[logRoomStatus] available:{} wating:{} full:{}",
+                roomManager.getAvailableRoomsCount(),
+                roomManager.getWaitingRoomsCount(),
+                roomManager.getFullRoomsCount()
+        );
     }
 }

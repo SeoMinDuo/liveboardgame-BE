@@ -13,8 +13,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
-import java.util.Map;
-
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -79,6 +77,7 @@ public class StompController {
         log.info("enterRoomController : sessionID={}", sessionId);
 
         if (roomUserCnt == 2) {
+            roomService.logRoomStatus();
             return new Greeting("start", userInfo.getName());
         }
 
