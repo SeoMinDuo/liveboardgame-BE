@@ -1,18 +1,73 @@
 package hello.liveboardgame.room.service;
 
+import hello.liveboardgame.room.domain.Room;
+import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.repository.RoomManager;
-import hello.liveboardgame.room.repository.RoomRepository;
+import hello.liveboardgame.user.repository.GameUserManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.OptionalLong;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoomService {
     private final RoomManager roomManager;
+    private final GameUserManager gameUserManager;
 
     public Long getRoomId() {
         return roomManager.getRoomId().orElse(-1);
+    }
+
+    private Room getRoom(Long roomId) {
+        return roomManager.getRoom(roomId);
+    }
+
+    /**
+     * user가 room에 입장
+     * @param roomId
+     * @param user
+     * @return 방에 인원 수
+     */
+    public Integer enterRoom(Long roomId, User user) {
+
+        if (roomManager.isContainsWatingRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 watingRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterWaitingRoom(roomId, user);
+
+        } else if (roomManager.isContainsAvailableRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 availableRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterAvailableRoom(roomId, user);
+        } else {
+            log.info("enterRoom() : userName={} 남은 방이 없음 roomId={}",user.getName(), roomId);
+        }
+        return roomManager.getRoomUserCount(roomId);
+    }
+
+    public void exitRoom(String sessionId) {
+        User findUser = gameUserManager.findBySessionId(sessionId);
+        if (findUser == null) {
+            logRoomStatus();
+            return;
+        }
+        Long findUserRoomId = findUser.getRoomId();//user가 속해있는 room의 id
+
+        if (roomManager.isContainsFullRooms(findUserRoomId)) {
+            log.info("exitRoom() : fullRoom 퇴장 roomid={}", findUserRoomId);
+            roomManager.exitFullRoom(findUserRoomId);
+        } else if (roomManager.isContainsWatingRooms(findUserRoomId)) {
+            log.info("exitRoom() : waitingRoom 퇴장 roomid={}", findUserRoomId);
+            roomManager.exitWaitingRoom(findUserRoomId);
+        } else if (roomManager.isContainsAvailableRooms(findUserRoomId)) {
+            log.info("exitRoom() : 해당 Room에는 아무도 없음 roomId={}", findUserRoomId);
+        }
+    }
+
+    public void logRoomStatus() {
+        log.info("[logRoomStatus] available:{} wating:{} full:{}",
+                roomManager.getAvailableRoomsCount(),
+                roomManager.getWaitingRoomsCount(),
+                roomManager.getFullRoomsCount()
+        );
     }
 }

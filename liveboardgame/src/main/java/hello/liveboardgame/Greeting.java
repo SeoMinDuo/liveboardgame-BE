@@ -1,16 +1,17 @@
 package hello.liveboardgame;
 
+import lombok.Getter;
+
+@Getter
 public class Greeting {
-    private String content;
+    private String gameState;
+    private String startUser;
 
     public Greeting() {
     }
 
-    public Greeting(String content) {
-        this.content = content;
-    }
-
-    public String getContent() {
-        return content;
+    public Greeting(String gameState, String startUser) {
+        this.gameState = gameState;
+        this.startUser = startUser;
     }
 }

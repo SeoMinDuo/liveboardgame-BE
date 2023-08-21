@@ -4,7 +4,6 @@ import hello.liveboardgame.room.dto.RoomIdDto;
 import hello.liveboardgame.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,9 +15,8 @@ public class RoomController {
 
 
     @GetMapping("/roomId")
-    public RoomIdDto getRoomIdController(String xxxID) {
+    public RoomIdDto getRoomIdController() {
         log.info("Get:/roomId 요청");
-        log.info("xxxID={}", xxxID);
         return new RoomIdDto(roomService.getRoomId());
     }
 }
