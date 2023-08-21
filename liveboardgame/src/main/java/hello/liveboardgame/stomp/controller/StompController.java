@@ -17,45 +17,8 @@ import org.springframework.stereotype.Controller;
 @Slf4j
 @RequiredArgsConstructor
 public class StompController {
-    private final SimpMessageSendingOperations messagingTemplate;
     private final RoomService roomService;
     private final GameInfoService gameInfoService;
-
-//    @MessageMapping("/sendMessage")
-////    @SendTo("/topic/messages")
-//    public void gameRoomResponseController(/*RoomMessage*/@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-////        log.info("id={}", message.getId());
-////        log.info("msg={}", message.getMsg());
-////        log.info("roomId={}", message.getRoomId());
-//        log.info("message.text = {}", message.get("text"));
-//        Greeting greeting = new Greeting("일단 text받긴함");
-//        //연결된 소켓의 세션정보를 얻음
-//        log.info("sessionID={}", headerAccessor.getSessionId());
-////        messagingTemplate.convertAndSend("/topic/" + message.getRoomId(), message);
-//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
-//    }
-
-    /**
-     * 클라이언트 인게임 입장처리
-     * @param roomId
-     * @param userInfo
-     * @param headerAccessor
-     * @return
-     */
-
-//    @MessageMapping("/sendMessage")
-////    @SendTo("/topic/messages")
-//    public void gameRoomResponseController(/*RoomMessage*/@Payload Map<String, String> message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-////        log.info("id={}", message.getId());
-////        log.info("msg={}", message.getMsg());
-////        log.info("roomId={}", message.getRoomId());
-//        log.info("message.text = {}", message.get("text"));
-//        Greeting greeting = new Greeting("일단 text받긴함");
-//        //연결된 소켓의 세션정보를 얻음
-//        log.info("sessionID={}", headerAccessor.getSessionId());
-////        messagingTemplate.convertAndSend("/topic/" + message.getRoomId(), message);
-//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
-//    }
 
     /**
      * 클라이언트 인게임 입장처리
@@ -78,10 +41,9 @@ public class StompController {
 
         if (roomUserCnt == 2) {
             roomService.logRoomStatus();
-            return new Greeting("start", userInfo.getName());
+            String selectedPlayerName = roomService.selectRandomStartingPlayer(roomId);
+            return new Greeting("start", selectedPlayerName);
         }
-
-//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
         return new Greeting("", "");
     }
 
@@ -96,14 +58,6 @@ public class StompController {
     public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
         log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
         gameInfoService.saveGameInfo(roomId, gameInfoDto);
-
-        String user1 = "user1";
-        String user2 = "user2";
-        String name = gameInfoDto.equals(user1)? user1 : user2;
-        new GameInfoDto(gameInfoDto.getX(), gameInfoDto.getY(), name);
-
-
         return gameInfoDto;
     }
-
 }

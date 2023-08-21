@@ -23,4 +23,5 @@ public class GameUserManager {
     public User delete(String sessionId) {
         return inGameUsers.remove(sessionId);
     }
+
 }
