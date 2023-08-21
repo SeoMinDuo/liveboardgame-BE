@@ -143,6 +143,12 @@ public class RoomManager {
      * @return room에 들어있는 user의 수
      */
     private Integer insertRoomUser(Room room, User user) {
+        //room정보 세팅
+        if (room.getGameId() == null) {
+            room.setGameId(UUID.randomUUID().toString());
+            room.setIsUsed(Boolean.TRUE);
+            room.setOrd(0);
+        }
         //인게임 user collection에 추가
         gameUserManager.save(user);
         List<User> roomUsers = room.getUsers();
@@ -154,7 +160,6 @@ public class RoomManager {
     public void exitFullRoom(Long roomId) {
         if (isContainsFullRooms(roomId)) {
             Room room = fullRooms.get(roomId);
-            //인게임 user 삭제
             deleteRoomUser(room);
 
             fullRooms.remove(room.getId());
@@ -165,7 +170,6 @@ public class RoomManager {
     public void exitWaitingRoom(Long roomId) {
         if (isContainsWatingRooms(roomId)) {
             Room room = waitingRooms.get(roomId);
-            //인게임 user 삭제
             deleteRoomUser(room);
 
             waitingRooms.remove(room.getId());
@@ -174,6 +178,12 @@ public class RoomManager {
     }
 
     private void deleteRoomUser(Room room) {
+        //room정보 세팅
+        if (room.getGameId() != null) {
+            room.setGameId(null);
+            room.setIsUsed(Boolean.FALSE);
+            room.setOrd(0);
+        }
         for (User user : room.getUsers()) {
             gameUserManager.delete(user.getSessionId());
         }
