@@ -16,6 +16,13 @@ import org.springframework.stereotype.Controller;
 public class StompController {
     private final RoomService roomService;
 
+    /**
+     * 클라이언트 인게임 입장처리
+     * @param roomId
+     * @param userInfo
+     * @param headerAccessor
+     * @return
+     */
     @MessageMapping("/enterRoom/{roomId}")
     @SendTo("/topic/{roomId}")
     public Greeting enterRoomController(@DestinationVariable Long roomId, UserInfoDto userInfo, SimpMessageHeaderAccessor headerAccessor) {
