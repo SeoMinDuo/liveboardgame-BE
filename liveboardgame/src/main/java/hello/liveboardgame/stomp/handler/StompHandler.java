@@ -28,6 +28,13 @@ public class StompHandler implements ChannelInterceptor {
                 System.out.println("DISCONNCT sessionId = " + sessionId);
                 roomService.exitRoom(sessionId);
             }
+            case SUBSCRIBE -> {
+                String subscriptionId = accessor.getSubscriptionId();
+                String destination = accessor.getDestination();
+                System.out.println("destination = " + destination);
+                System.out.println("message = " + message);
+                System.out.println("subscriptionId = " + subscriptionId);
+            }
         }
     }
 }
