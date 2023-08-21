@@ -106,25 +106,4 @@ public class StompController {
         return gameInfoDto;
     }
 
-    /**
-     * 클라이언트가 보낸 좌표값을 저장하고 Broadcast
-     * @param roomId
-     * @param gameInfoDto
-     * @return
-     */
-    @MessageMapping("/gameboard/{roomId}")
-    @SendTo("/topic/gameboard/{roomId}")
-    public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
-        log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
-        gameInfoService.saveGameInfo(roomId, gameInfoDto);
-
-        String user1 = "user1";
-        String user2 = "user2";
-        String name = gameInfoDto.equals(user1)? user1 : user2;
-        new GameInfoDto(gameInfoDto.getX(), gameInfoDto.getY(), name);
-
-
-        return gameInfoDto;
-    }
-
 }
