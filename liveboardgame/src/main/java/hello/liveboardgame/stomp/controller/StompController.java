@@ -40,10 +40,9 @@ public class StompController {
 
         if (roomUserCnt == 2) {
             roomService.logRoomStatus();
-            return new Greeting("start", userInfo.getName());
+            String selectedPlayerName = roomService.selectRandomStartingPlayer(roomId);
+            return new Greeting("start", selectedPlayerName);
         }
-
-//        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
         return new Greeting("", "");
     }
 
@@ -58,14 +57,6 @@ public class StompController {
     public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
         log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
         gameInfoService.saveGameInfo(roomId, gameInfoDto);
-
-        String user1 = "user1";
-        String user2 = "user2";
-        String name = gameInfoDto.equals(user1)? user1 : user2;
-        new GameInfoDto(gameInfoDto.getX(), gameInfoDto.getY(), name);
-
-
         return gameInfoDto;
     }
-
 }

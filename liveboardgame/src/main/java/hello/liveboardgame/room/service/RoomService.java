@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -17,10 +19,6 @@ public class RoomService {
 
     public Long getRoomId() {
         return roomManager.getRoomId().orElse(-1);
-    }
-
-    private Room getRoom(Long roomId) {
-        return roomManager.getRoom(roomId);
     }
 
     /**
@@ -69,5 +67,14 @@ public class RoomService {
                 roomManager.getWaitingRoomsCount(),
                 roomManager.getFullRoomsCount()
         );
+    }
+
+    public String selectRandomStartingPlayer(Long roomId) {
+        List<User> users = roomManager.getRoom(roomId).getUsers();
+        double random = Math.random() * 10;
+        System.out.println("random = " + random);
+        int randomIndex = (int) (random % 2);
+        System.out.println("randomIndex = " + randomIndex);
+        return users.get(randomIndex).getName();
     }
 }
