@@ -4,16 +4,14 @@ import lombok.Getter;
 
 @Getter
 public class Greeting {
-    private String gameServer;
+    private String gameState;
+    private String startUser;
 
     public Greeting() {
     }
 
-    public Greeting(String gameServer) {
-        this.gameServer = gameServer;
+    public Greeting(String gameState, String startUser) {
+        this.gameState = gameState;
+        this.startUser = startUser;
     }
-
-//    public String getGameServer() {
-//        return gameServer;
-//    }
 }

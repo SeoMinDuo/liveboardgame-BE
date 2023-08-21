@@ -47,10 +47,11 @@ public class StompController {
         log.info("enterRoomController : sessionID={}", sessionId);
 
         if (roomUserCnt == 2) {
-            return new Greeting("start");
+            roomService.logRoomStatus();
+            return new Greeting("start", userInfo.getName());
         }
 
 //        messagingTemplate.convertAndSend("/topic/" + /*message.getRoomId()*/"1", greeting);
-        return new Greeting("");
+        return new Greeting("", "");
     }
 }
