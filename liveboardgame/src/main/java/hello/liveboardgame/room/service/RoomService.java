@@ -1,6 +1,5 @@
 package hello.liveboardgame.room.service;
 
-import hello.liveboardgame.room.domain.Room;
 import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.repository.RoomManager;
 import hello.liveboardgame.user.repository.GameUserManager;
@@ -29,7 +28,7 @@ public class RoomService {
      */
     public Integer enterRoom(Long roomId, User user) {
 
-        if (roomManager.isContainsWatingRooms(roomId)) {
+        if (roomManager.isContainsWaitingRooms(roomId)) {
             log.info("enterRoom() : userName={}이 watingRoom에 입장 roomId={}", user.getName(), roomId);
             roomManager.enterWaitingRoom(roomId, user);
 
@@ -53,7 +52,7 @@ public class RoomService {
         if (roomManager.isContainsFullRooms(findUserRoomId)) {
             log.info("exitRoom() : fullRoom 퇴장 roomid={}", findUserRoomId);
             roomManager.exitFullRoom(findUserRoomId);
-        } else if (roomManager.isContainsWatingRooms(findUserRoomId)) {
+        } else if (roomManager.isContainsWaitingRooms(findUserRoomId)) {
             log.info("exitRoom() : waitingRoom 퇴장 roomid={}", findUserRoomId);
             roomManager.exitWaitingRoom(findUserRoomId);
         } else if (roomManager.isContainsAvailableRooms(findUserRoomId)) {

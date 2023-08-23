@@ -90,7 +90,7 @@ public class RoomManager {
      * @param roomId
      * @return
      */
-    public boolean isContainsWatingRooms(Long roomId) {
+    public boolean isContainsWaitingRooms(Long roomId) {
         if (waitingRooms.containsKey(roomId)) {
             return true;
         }
@@ -112,7 +112,7 @@ public class RoomManager {
     }
 
     public void enterWaitingRoom(Long roomId, User user) {
-        if (isContainsWatingRooms(roomId)) {
+        if (isContainsWaitingRooms(roomId)) {
             Room findRoom = waitingRooms.get(roomId);
             Integer roomUserSize = insertRoomUser(findRoom, user);
 
@@ -168,7 +168,7 @@ public class RoomManager {
     }
 
     public void exitWaitingRoom(Long roomId) {
-        if (isContainsWatingRooms(roomId)) {
+        if (isContainsWaitingRooms(roomId)) {
             Room room = waitingRooms.get(roomId);
             deleteRoomUser(room);
 
