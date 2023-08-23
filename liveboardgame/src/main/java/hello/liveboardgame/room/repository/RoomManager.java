@@ -28,24 +28,14 @@ public class RoomManager {
     @PostConstruct
     public void init() {
         log.info("init() 실행");
-        if (availableRooms.isEmpty()) {
-            log.info("availableRooms가 비어있음");
-            List<Room> roomList = repository.findAll();
-            for (Room room : roomList) {
-                availableRooms.put(room.getId(), room);
-                log.info("available Room add 성공 room={}", room);
-            }
-            log.info("availableRoom중 하나 room1 = {}", availableRooms.get(1L).getId());
-        } else {
-            log.info("availableRooms에 room객체가 존재함 room={}", availableRooms.values());
-            availableRooms.clear();
-            List<Room> roomList = repository.findAll();
-            for (Room room : roomList) {
-                availableRooms.put(room.getId(), room);
-            }
-        }
+        repository.resetAll();
+        availableRooms.clear();
         waitingRooms.clear();
         fullRooms.clear();
+        List<Room> roomList = repository.findAll();
+        for (Room room : roomList) {
+            availableRooms.put(room.getId(), room);
+        }
     }
 
     public Integer getAvailableRoomsCount() {
