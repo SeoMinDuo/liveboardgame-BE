@@ -15,7 +15,6 @@ public class RoomRepository {
 
     private static final Map<Long, Room> store = new HashMap<>();
 
-
     private static long remainRoomCnt = 100L;
 
     //방의 개수를 100개로 제한
@@ -32,5 +31,13 @@ public class RoomRepository {
 
     public List<Room> findAll() {
         return new ArrayList<>(store.values());
+    }
+
+    public void resetAll() {
+        store.clear();
+        for (long i = 1; i <= 100; i++) {
+            Room room = new Room(i);
+            store.put(room.getId(), room);
+        }
     }
 }
