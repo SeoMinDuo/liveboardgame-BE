@@ -11,13 +11,15 @@ public class GameInfo {
     private Integer x;
     private Integer y;
     private Integer ord;
+    private String userName;
 
-    public GameInfo(String gameId, Long roomId, Integer x, Integer y, Integer ord) {
+    public GameInfo(String gameId, Long roomId, Integer x, Integer y, Integer ord, String userName) {
         this.gameId = gameId;
         this.roomId = roomId;
         this.x = x;
         this.y = y;
         this.ord = ord;
+        this.userName = userName;
     }
 
     public GameInfo() {
@@ -26,11 +28,13 @@ public class GameInfo {
     @Override
     public String toString() {
         return "GameInfo{" +
-                "gameId='" + gameId + '\'' +
+                "id=" + id +
+                ", gameId='" + gameId + '\'' +
                 ", roomId=" + roomId +
                 ", x=" + x +
                 ", y=" + y +
                 ", ord=" + ord +
+                ", userName='" + userName + '\'' +
                 '}';
     }
 }

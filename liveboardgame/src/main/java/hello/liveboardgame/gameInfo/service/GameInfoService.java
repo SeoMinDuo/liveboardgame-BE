@@ -24,8 +24,9 @@ public class GameInfoService {
         Integer x = gameInfoDto.getX();
         Integer y = gameInfoDto.getY();
         Integer ord = room.getOrder();
+        String userName = gameInfoDto.getName();
 
-        GameInfo gameInfo = new GameInfo(gameId, roomId, x, y, ord);
+        GameInfo gameInfo = new GameInfo(gameId, roomId, x, y, ord, userName);
         log.info("GameInfo 저장완료 {}", gameInfo);
         gameInfoRepository.save(gameInfo);
     }
