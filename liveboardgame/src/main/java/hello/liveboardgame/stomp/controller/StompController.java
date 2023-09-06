@@ -56,6 +56,7 @@ public class StompController {
     @SendTo("/topic/gameboard/{roomId}")
     public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
         log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
+        //좌표정보 저장
         gameInfoService.saveGameInfo(roomId, gameInfoDto);
         return gameInfoDto;
     }

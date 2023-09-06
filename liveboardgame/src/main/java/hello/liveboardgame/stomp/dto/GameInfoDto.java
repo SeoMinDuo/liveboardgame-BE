@@ -7,14 +7,13 @@ import lombok.Setter;
 public class GameInfoDto {
     private int x;
     private int y;
+    private String name;
 
     public GameInfoDto(int x, int y, String name) {
         this.x = x;
         this.y = y;
         this.name = name;
     }
-
-    private String name;
 
     @Override
     public String toString() {

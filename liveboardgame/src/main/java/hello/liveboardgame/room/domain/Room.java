@@ -15,7 +15,6 @@ public class Room {
 
     private Boolean isUsed = false;
 
-
     private List<User> users = new ArrayList<>();
 
     private String gameId;
@@ -29,4 +28,5 @@ public class Room {
         ord += 1;
         return ord;
     }
+    private List<GameInfo> gameInfoList = new ArrayList<>();
 }
