@@ -52,6 +52,37 @@ public class Room {
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
 
+    private void initVisited() {
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                visited[y][x] = false;
+            }
+        }
+        visited[4][4] = true;
+    }
+
+    private void initBoard() {
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                board[y][x] = 0;
+            }
+        }
+    }
+    private void fillBoard(String blueName, String redName) {
+        board[4][4] = -1;
+        for (GameInfo gameInfo : gameInfoList) {
+            int x = gameInfo.getX();
+            int y = gameInfo.getY();
+            log.info("x,y={},{} blueName={} redName={} getUserName={}",x,y, blueName, redName, gameInfo.getUserName());
+            if (blueName.equals(gameInfo.getUserName())) {
+                board[y][x] = 1;
+                log.info("boar={}",board[y][x]);
+            } else if (redName.equals(gameInfo.getUserName())) {
+                board[y][x] = 2;
+                log.info("boar={}",board[y][x]);
+            }
+        }
+    }
     public void initGame() {
         initBoard();
         initVisited();
