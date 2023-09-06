@@ -154,6 +154,7 @@ public class RoomManager {
 
             fullRooms.remove(room.getId());
             availableRooms.put(room.getId(), room);
+            room.initGame();
         }
     }
 
@@ -164,6 +165,7 @@ public class RoomManager {
 
             waitingRooms.remove(room.getId());
             availableRooms.put(room.getId(), room);
+            room.initGame();
         }
     }
 

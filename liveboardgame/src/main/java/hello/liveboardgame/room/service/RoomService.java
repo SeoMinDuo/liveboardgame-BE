@@ -1,5 +1,8 @@
 package hello.liveboardgame.room.service;
 
+import hello.liveboardgame.room.dto.GameOutcomeDto;
+import hello.liveboardgame.room.domain.Room;
+import hello.liveboardgame.stomp.dto.GameInfoDto;
 import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.repository.RoomManager;
 import hello.liveboardgame.user.repository.GameUserManager;
@@ -75,5 +78,10 @@ public class RoomService {
         int randomIndex = (int) (random % 2);
         System.out.println("randomIndex = " + randomIndex);
         return users.get(randomIndex).getName();
+    }
+
+    public GameOutcomeDto getGameResult(Long roomId, GameInfoDto gameInfoDto) {
+        Room room = roomManager.getRoom(roomId);
+        return room.getGameResult(gameInfoDto);
     }
 }
