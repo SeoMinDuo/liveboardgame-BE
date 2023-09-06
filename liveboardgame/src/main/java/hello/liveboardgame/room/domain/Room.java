@@ -52,6 +52,133 @@ public class Room {
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
 
+    private int getTerritorySize(String name) {
+
+        //bord초기화
+        initBoard();
+        //visited초기화
+        initVisited();
+
+        //red blue 유저 이름을 찾음
+        BlueRedNamesDto blueRedUserName = getBlueRedUserName();
+        String blueName = blueRedUserName.getBlueUserName();
+        String redName = blueRedUserName.getRedUserName();
+
+        //블루 레드 좌표정보 각각의 리스트에 저장 및 board배열에 파랑 빨강 좌표 기록
+        board[4][4] = -1;
+        for (GameInfo gameInfo : gameInfoList) {
+            int x = gameInfo.getX();
+            int y = gameInfo.getY();
+            if (blueName.equals(gameInfo.getUserName())) {
+                board[y][x] = 1;
+                blueCoordinateList.add(gameInfo);
+            } else if (redName.equals(gameInfo.getUserName())) {
+                board[y][x] = 2;
+                redCoordinatedList.add(gameInfo);
+            }
+        }
+        //board print@@@@@@@@@@@@@@@@@@@@2
+        System.out.println("boar print");
+        printBoard();
+
+        //영토크기를 찾고 반환
+        int result = 0;
+        areaSet.clear();
+        if (name.equals(blueName)) {
+
+            //파란성 DFS true 체킹
+            for (GameInfo blueInfo : blueCoordinateList) {
+                int cx = blueInfo.getX();
+                int cy = blueInfo.getY();
+                dfsCheckArea(cx, cy);
+            }
+            //빨간성 DFS False 체킹
+            for (GameInfo redInfo : redCoordinatedList) {
+                int cx = redInfo.getX();
+                int cy = redInfo.getY();
+                dfsDisCheckArea(cx, cy);
+            }
+            //True 영역이 4면과 맞닿아 있는지 체크
+            //Ture를 지우면서 이동하며 4면과 닿아있으면 0반환 아니라면 개수반환
+            for (CoordInfo coordInfo : areaSet) {
+                System.out.print("coordInfo.getX() = " + coordInfo.getX());
+                System.out.print("coordInfo.getY() = " + coordInfo.getY());
+                System.out.println();
+                int x = coordInfo.getX();
+                int y = coordInfo.getY();
+                if (!visited[y][x]) continue;
+                result += dfsGetValidArea(x, y);
+                System.out.println("result = " + result);
+
+            }
+
+        } else if (name.equals(redName)) {
+            //빨간성 DFS true 체킹
+            for (GameInfo redInfo : redCoordinatedList) {
+                int cx = redInfo.getX();
+                int cy = redInfo.getY();
+                dfsCheckArea(cx, cy);
+            }
+            //파란성 DFS False 체킹
+            for (GameInfo blueInfo : blueCoordinateList) {
+                int cx = blueInfo.getX();
+                int cy = blueInfo.getY();
+                dfsDisCheckArea(cx, cy);
+            }
+            //@@@@@@@@@임시 출력
+            printVisited();
+            //True 영역이 4면과 맞닿아 있는지 체크
+            //Ture를 지우면서 이동하며 4면과 닿아있으면 0반환 아니라면 개수반환
+            for (CoordInfo coordInfo : areaSet) {
+                //checkTouch초기화
+                for (int i = 0; i < 4; i++) {
+                    checkTouchFourSpace[i] = false;
+                }
+                System.out.print("coordInfo.getX() = " + coordInfo.getX());
+                System.out.print("coordInfo.getY() = " + coordInfo.getY());
+                System.out.println();
+                int x = coordInfo.getX();
+                int y = coordInfo.getY();
+                if (!visited[y][x]) continue;
+                result += dfsGetValidArea(x, y);
+                System.out.println("result = " + result);
+
+            }
+        }
+        //board print
+        System.out.println("boar print");
+        printBoard();
+
+        //@@@@@@@@@임시 출력
+        printVisited();
+
+        return result;
+    }
+
+    private BlueRedNamesDto getBlueRedUserName() {
+        String blueName = "";
+        String redName = "";
+        if (gameInfoList.get(0).getUserName().equals(users.get(0).getName())) {
+            blueName = users.get(0).getName();
+            redName = users.get(1).getName();
+            System.out.println("redName = " + redName + "blueName = " + blueName);
+        } else {
+            blueName = users.get(1).getName();
+            redName = users.get(0).getName();
+            System.out.println("redName = " + redName + "blueName = " + blueName);
+        }
+        return new BlueRedNamesDto(blueName, redName);
+    }
+
+    private String getRivalName(GameInfoDto gameInfoDto) {
+        for (User user : users) {
+            if (!gameInfoDto.getName().equals(user.getName())) {
+                return user.getName();
+            }
+        }
+        return null;
+    }
+
     private void initVisited() {
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
@@ -102,6 +229,72 @@ public class Room {
             }
         }
     }
+
+
+    private void dfsCheckArea(int x, int y) {
+        for (int[] position : positions) {
+            int nx = x + position[1];
+            int ny = y + position[0];
+            //이동 불가능 지역 또는 이미 방문한 지역은 무시
+            if (!isValidPosition(nx, ny) || board[ny][nx] != 0 || visited[ny][nx]) continue;
+
+            //방문체크
+            visited[ny][nx] = true;
+            areaSet.add(new CoordInfo(nx, ny));
+            dfsCheckArea(nx, ny);
+        }
+    }
+
+    private boolean isValidPosition(int x, int y) {
+        return 0 <= x && x < 9 && 0 <= y && y < 9;
+    }
+
+    private void dfsDisCheckArea(int x, int y) {
+        for (int[] position : positions) {
+            int nx = x + position[1];
+            int ny = y + position[0];
+            //이동불가능지역 또는 방문한 적 지역은 무시
+            if (!isValidPosition(nx, ny) || board[ny][nx] != 0 || !visited[ny][nx]) continue;
+
+            //방문체크삭제
+            visited[ny][nx] = false;
+            areaSet.remove(new CoordInfo(nx, ny));
+            dfsDisCheckArea(nx, ny);
+        }
+    }
+
+    private int dfsGetValidArea(int x, int y) {
+        int areaSize = 0;
+        boolean isValidArea = true;
+        //영역이 4면에 맞닿아 있어 영역으로 인정 x
+        if (x == 0) checkTouchFourSpace[0] = true;
+        if (x == 8) checkTouchFourSpace[1] = true;
+        if (y == 0) checkTouchFourSpace[2] = true;
+        if (y == 8) checkTouchFourSpace[3] = true;
+        int count = 0;
+        for (boolean b : checkTouchFourSpace) {
+            if (b) count++;
+        }
+        if (count == 4) {
+            isValidArea = false;
+        }
+        visited[y][x] = false;
+        //다음 위치로 이동
+        for (int[] position : positions) {
+            int nx = x + position[1];
+            int ny = y + position[0];
+
+            if (!isValidPosition(nx,ny) || !visited[ny][nx]) continue;
+            int v = dfsGetValidArea(nx, ny);
+            if (v == 0) {//0이 반환되는 경우 검증실패
+                isValidArea = false;
+            }
+            areaSize += v;
+        }
+        if (!isValidArea) return 0;
+        return areaSize + 1;
+    }
+
     public void initGame() {
         initBoard();
         initVisited();
