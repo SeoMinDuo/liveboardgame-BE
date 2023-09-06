@@ -28,4 +28,5 @@ public class Room {
         ord += 1;
         return ord;
     }
+    private List<GameInfo> gameInfoList = new ArrayList<>();
 }
