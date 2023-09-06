@@ -52,6 +52,37 @@ public class Room {
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
 
+
+    private GameOutcomeDto compareTerritoriesAndReturnWinner(String userName, String rivalName) {
+
+        String blueUserName = gameInfoList.get(0).getUserName();
+        //영토가 더 큰 유저의 승리를 반환
+        int userTerritorySize = getTerritorySize(userName);
+        int rivalTerritorySize = getTerritorySize(rivalName);
+        String winnerName = null;
+
+        log.info("getGameResult : userTerritorySize={} rivalTerritorySize={}", userTerritorySize, rivalTerritorySize);
+        if (userName == blueUserName) {
+            if (userTerritorySize > rivalTerritorySize + 3) {
+                log.info("getGameResult : {}님이 정복을 성공하였습니다.", userName);
+                winnerName = userName;
+
+            } else if (userTerritorySize < rivalTerritorySize + 3) {
+                log.info("getGameResult : {}님이 정복을 성공하였습니다.", rivalName);
+                winnerName = rivalName;
+            }
+        } else {
+            if (userTerritorySize + 3 > rivalTerritorySize) {
+                log.info("getGameResult : {}님이 정복을 성공하였습니다.", userName);
+                winnerName = userName;
+            } else if (userTerritorySize + 3 < rivalTerritorySize) {
+                log.info("getGameResult : {}님이 정복을 성공하였습니다.", rivalName);
+                winnerName = rivalName;
+            }
+        }
+        return new GameOutcomeDto(winnerName, GameResultStatus.CONQUERED_TERRITORY);
+    }
+
     private int getTerritorySize(String name) {
 
         //bord초기화
