@@ -52,6 +52,91 @@ public class Room {
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
 
+    private boolean isConqueredTerritory(GameInfoDto gameInfoDto) {
+        log.info("isConqueredTerritory : roomId={} name={} 성 파괴테스트 들어옴", id, gameInfoDto.getName());
+        //bord초기화
+        initBoard();
+        //visited초기화
+        initVisited();
+
+        //red blue 유저를 찾음
+        log.info("isConqueredTerritory : ++++++++++++++++++++++++++red blue 유저를 찾음++++++++++++++++++++");
+        BlueRedNamesDto blueRedNamesDto = getBlueRedUserName();
+        String blueName = blueRedNamesDto.getBlueUserName();
+        String redName = blueRedNamesDto.getRedUserName();
+        log.info("isConqueredTerritory : ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        //board배열에 파랑 빨강 좌표 기록
+        log.info("isConqueredTerritory : +++++++++++++++++++board배열에 파랑빨강 좌표 기록+++++++++++++++++++" );
+        fillBoard(blueName, redName);
+        printBoard();
+        log.info("isConqueredTerritory : ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+        //수를 둔 유저가 파란성일 때 빨간성을 파괴했는지 확인
+        log.info("isConqueredTerritory : ++++++++++++++++++++++++수를 둔 유저가 성을 파괴했는지 확인 시작+++++++++++++++++++++++++++");
+        boolean result = false;
+        int x = gameInfoDto.getX();
+        int y = gameInfoDto.getY();
+        log.info("gameInfoDto.getName()={} ", gameInfoDto.getName());
+        if (gameInfoDto.getName().equals(blueName)) {
+            log.info("파괴호출 : {}는 blue팀", gameInfoDto.getName());
+            result = dfsIsCastleSurround(x, y, 2);
+        }
+        //수를 둔 유저가 빨간성일 때 파란성을 파괴했는지 확인
+        else if (gameInfoDto.getName().equals(redName)) {
+            log.info("파괴호출 : {}는 red팀", gameInfoDto.getName());
+            result = dfsIsCastleSurround(x, y, 1);
+        }
+        //visited 로그출력
+        System.out.println("+++++++++++visited 출력+++++++++++");
+        printVisited();
+        System.out.println("+++++++++++board 출력+++++++++++");
+        printBoard();
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        log.info("isConqueredTerritory : ++++++++++++++++++++++++수를 둔 유저가 성을 파괴했는지 확인 끝+++++++++++++++++++++++++++");
+        return result;
+    }
+
+    private boolean dfsIsCastleSurround(int x, int y, int rival) {
+
+        log.info("dfsIsCastleSurround 시작 x,y={},{}",x,y);
+        System.out.println("++++++++++print visited++++++++++");
+        printVisited();
+        System.out.println("+++++++++++++++++++++++++++++++++");
+        System.out.println("++++++++++print board++++++++++");
+        printBoard();
+
+        boolean isSurrond = true;
+        for (int i = 0; i < 4; i++) {
+            int nx = x + positions[i][1];
+            int ny = y + positions[i][0];
+            //상대측의 성벽이 공격자의 성벽에 닿는 경우 또는 범위를 이탈할 경우 다음 성벽 조사를 위해 continue
+            if (!isValidPosition(nx, ny) || (rival == 1 && board[ny][nx] == 2) || visited[ny][nx]) {
+                continue;
+            } else if (!isValidPosition(nx, ny) || (rival == 2 && board[ny][nx] == 1) || visited[ny][nx]) {
+                continue;
+            }
+            log.info("nx={}ny={}rival={}board={}", nx, ny,rival,board[ny][nx]);
+
+            //빈공간에 접근될 경우 성 파괴로 인정 x
+            if (board[ny][nx] == 0) {
+                log.info("x={}y={}nx={}ny={}",x,y,nx,ny);
+                log.info("빈 공간에 접근하여 성을 파괴한 것으로 인정하지 않음");
+                isSurrond = false;
+                continue;
+            }
+
+            //방문체크
+            visited[ny][nx] = true;
+            log.info("visited[{}][{}]={}",ny,nx,visited[ny][nx]);
+
+            isSurrond = dfsIsCastleSurround(nx, ny, rival);
+            log.info("nx, ny={},{} isSurround={}",nx,ny,isSurrond);
+            if (isSurrond) return true;//하나라도 true가 존재하면 정복할 성이 존재하므로 true반환
+        }
+
+        log.info("dfsIsCastleSurround 끝");
+        return isSurrond;
+    }
 
     private GameOutcomeDto compareTerritoriesAndReturnWinner(String userName, String rivalName) {
 
