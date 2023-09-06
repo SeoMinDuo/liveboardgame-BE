@@ -52,6 +52,38 @@ public class Room {
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
 
+    public GameOutcomeDto getGameResult(GameInfoDto gameInfoDto) {
+
+        int x = gameInfoDto.getX();
+        int y = gameInfoDto.getY();
+//        Room room = roomManager.getRoom(roomId);
+        String userName = gameInfoDto.getName();
+        //라이벌 이름을 찾음
+        String rivalName = getRivalName(gameInfoDto);
+
+        //게임에서 pass가 연속해서 2번 나오면 영토의 크기를 비교하여 게임결과 반환
+        if (x == -1 || y == -1) {
+            passCnt++;
+            if (passCnt == 2) {
+                log.info("getGameResult : passCnt=2로 들어옴");
+                GameOutcomeDto winnerGameOutcome = compareTerritoriesAndReturnWinner(userName, rivalName);
+                if (winnerGameOutcome != null) return winnerGameOutcome;
+                log.info("getGameResult : {}님 무승부입니다.", gameInfoDto.getName());
+                return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.DRAW);
+            }
+            return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.NO_ACTION);
+        }
+
+        //상대성을 정복할 경우 결과 반환
+        if (isConqueredTerritory(gameInfoDto)) {
+            passCnt = 0;
+            log.info("getGameResult : {}님이 성을 파괴 하였습니다.", gameInfoDto.getName());
+            return new GameOutcomeDto((gameInfoDto.getName()), GameResultStatus.DESTROYED_FORTRESS);
+        }
+        log.info("getGameResult : {}님 아무일도 일어나지 않았습니다.", gameInfoDto.getName());
+        return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.NO_ACTION);
+    }
+
     private boolean isConqueredTerritory(GameInfoDto gameInfoDto) {
         log.info("isConqueredTerritory : roomId={} name={} 성 파괴테스트 들어옴", id, gameInfoDto.getName());
         //bord초기화
