@@ -1,7 +1,11 @@
 package hello.liveboardgame.room.domain;
 
 import hello.liveboardgame.gameInfo.domain.GameInfo;
+import hello.liveboardgame.room.dto.BlueRedNamesDto;
 import hello.liveboardgame.room.dto.CoordInfo;
+import hello.liveboardgame.room.dto.GameOutcomeDto;
+import hello.liveboardgame.room.dto.GameResultStatus;
+import hello.liveboardgame.stomp.dto.GameInfoDto;
 import hello.liveboardgame.user.domain.User;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -47,4 +51,19 @@ public class Room {
             {0, 1}, {1, 0}, {0, -1}, {-1, 0}
     };
     private boolean[] checkTouchFourSpace = {false, false, false, false};//0:좌 1:우 2:상 3:하
+
+    public void initGame() {
+        initBoard();
+        initVisited();
+        blueCoordinateList.clear();
+        redCoordinatedList.clear();
+        initCheckTouchFourSpace();
+        areaSet.clear();
+        passCnt = 0;
+    }
+    private void initCheckTouchFourSpace() {
+        for (int i = 0; i < 4; i++) {
+            checkTouchFourSpace[i] = false;
+        }
+    }
 }
