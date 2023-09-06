@@ -11,12 +11,19 @@ import java.util.Map;
 @Slf4j
 public class GameInfoRepository {
     private static Map<Long, GameInfo> store = new HashMap<>();
+    private static Long sequence = 0L;
 
     public GameInfo findById(Long id) {
         return store.get(id);
     }
 
     public void save(GameInfo gameInfo) {
+        gameInfo.setId(++sequence);
         store.put(gameInfo.getId(), gameInfo);
+    }
+
+    public void deleteAll() {
+        sequence = 0L;
+        store.clear();
     }
 }
