@@ -1,5 +1,6 @@
 package hello.liveboardgame.stomp.dto;
 
+import hello.liveboardgame.room.dto.GameResultStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ public class GameInfoDto {
     private int x;
     private int y;
     private String name;
+    private int gameState;
 
     public GameInfoDto(int x, int y, String name) {
         this.x = x;
