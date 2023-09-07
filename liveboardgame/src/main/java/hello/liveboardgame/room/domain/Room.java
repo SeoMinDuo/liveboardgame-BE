@@ -75,8 +75,8 @@ public class Room {
         }
 
         //상대성을 정복할 경우 결과 반환
+        passCnt = 0;
         if (isConqueredTerritory(gameInfoDto)) {
-            passCnt = 0;
             log.info("getGameResult : {}님이 성을 파괴 하였습니다.", gameInfoDto.getName());
             return new GameOutcomeDto((gameInfoDto.getName()), GameResultStatus.DESTROYED_FORTRESS);
         }
