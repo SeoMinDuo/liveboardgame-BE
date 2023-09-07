@@ -451,6 +451,7 @@ public class Room {
         initCheckTouchFourSpace();
         areaSet.clear();
         passCnt = 0;
+        gameInfoList.clear();
     }
     private void initCheckTouchFourSpace() {
         for (int i = 0; i < 4; i++) {
