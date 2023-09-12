@@ -111,12 +111,24 @@ public class Room {
         log.info("gameInfoDto.getName()={} ", gameInfoDto.getName());
         if (gameInfoDto.getName().equals(blueName)) {
             log.info("파괴호출 : {}는 blue팀", gameInfoDto.getName());
-            result = dfsIsCastleSurround(x, y, 2);
+            for (int[] position : positions) {
+                    int nx = x + position[1];
+                    int ny = y + position[0];
+                    if (!isValidPosition(nx, ny)|| board[ny][nx] != 2) continue;
+                    result = dfsIsCastleSurround(nx, ny, 2);
+                    if (result == true) break;
+            }
         }
         //수를 둔 유저가 빨간성일 때 파란성을 파괴했는지 확인
         else if (gameInfoDto.getName().equals(redName)) {
             log.info("파괴호출 : {}는 red팀", gameInfoDto.getName());
-            result = dfsIsCastleSurround(x, y, 1);
+            for (int[] position : positions) {
+                int nx = x + position[1];
+                int ny = y + position[0];
+                if (!isValidPosition(nx, ny) || board[ny][nx] != 1) continue;
+                result = dfsIsCastleSurround(nx, ny, 1);
+                if (result == true) break;
+            }
         }
         //visited 로그출력
         System.out.println("+++++++++++visited 출력+++++++++++");
@@ -129,6 +141,8 @@ public class Room {
     }
 
     private boolean dfsIsCastleSurround(int x, int y, int rival) {
+        //방문체크
+        visited[y][x] = true;
 
         log.info("dfsIsCastleSurround 시작 x,y={},{}",x,y);
         System.out.println("++++++++++print visited++++++++++");
@@ -153,17 +167,14 @@ public class Room {
             if (board[ny][nx] == 0) {
                 log.info("x={}y={}nx={}ny={}",x,y,nx,ny);
                 log.info("빈 공간에 접근하여 성을 파괴한 것으로 인정하지 않음");
-                isSurrond = false;
-                continue;
+                return false;
             }
 
-            //방문체크
-            visited[ny][nx] = true;
             log.info("visited[{}][{}]={}",ny,nx,visited[ny][nx]);
 
             isSurrond = dfsIsCastleSurround(nx, ny, rival);
             log.info("nx, ny={},{} isSurround={}",nx,ny,isSurrond);
-            if (isSurrond) return true;//하나라도 true가 존재하면 정복할 성이 존재하므로 true반환
+            if (!isSurrond) return false;//하나라도 false가 존재하면 정복할 성이 존재하지 않기 때문에 false반환
         }
 
         log.info("dfsIsCastleSurround 끝");
