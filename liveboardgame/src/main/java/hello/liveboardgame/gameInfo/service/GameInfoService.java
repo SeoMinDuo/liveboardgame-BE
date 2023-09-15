@@ -28,13 +28,20 @@ public class GameInfoService {
 
         Room room = roomManager.getRoom(roomId);
 
-        String gameId = room.getGameId();
-        Integer ord = room.getOrder();
-        String userName = gameInfoDto.getName();
-
-        GameInfo gameInfo = new GameInfo(gameId, roomId, x, y, ord, userName);
+        GameInfo gameInfo = generateGameInfo(gameInfoDto, room);
         log.info("GameInfo 저장완료 {}", gameInfo);
         gameInfoRepository.save(gameInfo);
         room.getGameInfoList().add(gameInfo);
+    }
+
+    private static GameInfo generateGameInfo(GameInfoDto gameInfoDto, Room room) {
+        String gameId = room.getGameId();
+        Long roomId = room.getId();
+        int x = gameInfoDto.getX();
+        int y = gameInfoDto.getY();
+        Integer ord = room.getOrder();
+        String userName = gameInfoDto.getName();
+
+        return new GameInfo(gameId, roomId, x, y, ord, userName);
     }
 }
