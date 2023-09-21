@@ -44,6 +44,24 @@ public class RoomService {
         return roomManager.getRoomUserCount(roomId);
     }
 
+    public Integer enterRoomForBlueRedControl(Long roomId, User user, int colorNum) {
+
+        if (roomManager.isContainsWaitingRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 watingRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterWaitingRoom(roomId, user);
+
+        } else if (roomManager.isContainsAvailableRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 availableRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterAvailableRoom(roomId, user);
+        } else {
+            log.info("enterRoom() : userName={} 남은 방이 없음 roomId={}",user.getName(), roomId);
+        }
+        if (colorNum == 1) roomManager.getRoom(roomId).setBlueUser(user);
+        else if (colorNum == 2) roomManager.getRoom(roomId).setRedUser(user);
+
+        return roomManager.getRoomUserCount(roomId);
+    }
+
     public void exitRoom(String sessionId) {
         User findUser = gameUserManager.findBySessionId(sessionId);
         if (findUser == null) {
