@@ -66,10 +66,7 @@ public class Room {
             passCnt++;
             if (passCnt == 2) {
                 log.info("getGameResult : passCnt=2로 들어옴");
-                GameOutcomeDto winnerGameOutcome = compareTerritoriesAndReturnWinner(userName, rivalName);
-                if (winnerGameOutcome != null) return winnerGameOutcome;
-                log.info("getGameResult : {}님 무승부입니다.", gameInfoDto.getName());
-                return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.DRAW);
+                return compareTerritoriesAndReturnWinner(userName, rivalName);
             }
             return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.NO_ACTION);
         }
@@ -208,7 +205,8 @@ public class Room {
                 winnerName = rivalName;
             }
         }
-        return new GameOutcomeDto(winnerName, GameResultStatus.CONQUERED_TERRITORY);
+        if (winnerName != null) return new GameOutcomeDto(winnerName, GameResultStatus.CONQUERED_TERRITORY);
+        return new GameOutcomeDto(winnerName, GameResultStatus.DRAW);
     }
 
     private int getTerritorySize(String name) {
@@ -237,7 +235,7 @@ public class Room {
             }
         }
         //board print@@@@@@@@@@@@@@@@@@@@2
-        System.out.println("boar print");
+        System.out.println("board print");
         printBoard();
 
         //영토크기를 찾고 반환
