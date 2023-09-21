@@ -90,11 +90,17 @@ public class RoomService {
     }
 
     public String selectRandomStartingPlayer(Long roomId) {
-        List<User> users = roomManager.getRoom(roomId).getUsers();
+        Room findRoom = roomManager.getRoom(roomId);
+        List<User> users = findRoom.getUsers();
         double random = Math.random() * 10;
         System.out.println("random = " + random);
         int randomIndex = (int) (random % 2);
         System.out.println("randomIndex = " + randomIndex);
+        //blue red user저장
+        for (int i = 0; i < 2; i++) {
+            if (randomIndex == i) findRoom.setBlueUser(users.get(i));
+            else findRoom.setRedUser(users.get(i));
+        }
         return users.get(randomIndex).getName();
     }
 

@@ -26,6 +26,10 @@ public class Room {
 
     private List<User> users = new ArrayList<>();
 
+    private User blueUser;
+
+    private User redUser;
+
     private String gameId;
 
     private Integer ord = 0;
@@ -90,9 +94,10 @@ public class Room {
 
         //red blue 유저를 찾음
         log.info("isConqueredTerritory : ++++++++++++++++++++++++++red blue 유저를 찾음++++++++++++++++++++");
-        BlueRedNamesDto blueRedNamesDto = getBlueRedUserName();
-        String blueName = blueRedNamesDto.getBlueUserName();
-        String redName = blueRedNamesDto.getRedUserName();
+        String blueName = blueUser.getName();
+        String redName = redUser.getName();
+        System.out.println("redName = " + redName + "blueName = " + blueName);
+        System.out.println("redName = " + redName + "blueName = " + blueName);
         log.info("isConqueredTerritory : ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         //board배열에 파랑 빨강 좌표 기록
         log.info("isConqueredTerritory : +++++++++++++++++++board배열에 파랑빨강 좌표 기록+++++++++++++++++++" );
@@ -180,7 +185,7 @@ public class Room {
 
     private GameOutcomeDto compareTerritoriesAndReturnWinner(String userName, String rivalName) {
 
-        String blueUserName = gameInfoList.get(0).getUserName();
+        String blueUserName = blueUser.getName();
         //영토가 더 큰 유저의 승리를 반환
         int userTerritorySize = getTerritorySize(userName);
         int rivalTerritorySize = getTerritorySize(rivalName);
@@ -217,9 +222,8 @@ public class Room {
         initVisited();
 
         //red blue 유저 이름을 찾음
-        BlueRedNamesDto blueRedUserName = getBlueRedUserName();
-        String blueName = blueRedUserName.getBlueUserName();
-        String redName = blueRedUserName.getRedUserName();
+        String blueName = blueUser.getName();
+        String redName = redUser.getName();
 
         //블루 레드 좌표정보 각각의 리스트에 저장 및 board배열에 파랑 빨강 좌표 기록
         board[4][4] = -1;
@@ -310,21 +314,6 @@ public class Room {
         printVisited();
 
         return result;
-    }
-
-    private BlueRedNamesDto getBlueRedUserName() {
-        String blueName = "";
-        String redName = "";
-        if (gameInfoList.get(0).getUserName().equals(users.get(0).getName())) {
-            blueName = users.get(0).getName();
-            redName = users.get(1).getName();
-            System.out.println("redName = " + redName + "blueName = " + blueName);
-        } else {
-            blueName = users.get(1).getName();
-            redName = users.get(0).getName();
-            System.out.println("redName = " + redName + "blueName = " + blueName);
-        }
-        return new BlueRedNamesDto(blueName, redName);
     }
 
     private String getRivalName(GameInfoDto gameInfoDto) {
