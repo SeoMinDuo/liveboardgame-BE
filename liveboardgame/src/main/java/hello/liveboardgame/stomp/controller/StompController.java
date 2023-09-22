@@ -2,6 +2,7 @@ package hello.liveboardgame.stomp.controller;
 
 import hello.liveboardgame.Greeting;
 import hello.liveboardgame.gameInfo.service.GameInfoService;
+import hello.liveboardgame.room.dto.GameOutcomeDto;
 import hello.liveboardgame.stomp.dto.GameInfoDto;
 import hello.liveboardgame.user.domain.User;
 import hello.liveboardgame.room.service.RoomService;
@@ -47,7 +48,7 @@ public class StompController {
     }
 
     /**
-     * 클라이언트가 보낸 좌표값을 저장하고 Broadcast
+     * 클라이언트가 보낸 좌표값을 저장하고 게임결과 Broadcast
      * @param roomId
      * @param gameInfoDto
      * @return
@@ -56,8 +57,12 @@ public class StompController {
     @SendTo("/topic/gameboard/{roomId}")
     public GameInfoDto CoordinateUpdateController(@DestinationVariable Long roomId, GameInfoDto gameInfoDto) {
         log.info("CoordinateUpdateController gameInfoDto={}", gameInfoDto);
+
         //좌표정보 저장
         gameInfoService.saveGameInfo(roomId, gameInfoDto);
+        //게임결과 반환
+        GameOutcomeDto gameResult = roomService.getGameResult(roomId, gameInfoDto);
+        gameInfoDto.setGameState(gameResult.getStatue().getStateCode());
         return gameInfoDto;
     }
 }
