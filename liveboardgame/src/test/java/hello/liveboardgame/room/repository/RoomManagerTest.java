@@ -34,37 +34,6 @@ class RoomManagerTest {
     }
 
     @Test
-    void getRoomId() {
-        //available Rooms에서 roomId를 가져오는 케이스
-        long roomId1 = roomManager.getRoomId().getAsLong();
-        Assertions.assertThat(roomId1).isEqualTo(1L);
-        //waiting rooms에서 roomId를 가져오는 케이스
-        roomManager.enterAvailableRoom(roomId1, new User("a", "a", roomId1));
-        long roomId2 = roomManager.getRoomId().getAsLong();
-        Assertions.assertThat(roomId2).isEqualTo(1L);
-        //1L room의 user가 가득차 roomId 2L가 반환되는 케이스
-        roomManager.enterWaitingRoom(roomId2, new User("b", "b", roomId2));
-        long roomId3 = roomManager.getRoomId().getAsLong();
-        Assertions.assertThat(roomId3).isEqualTo(2L);
-        //waiting rooms에서 roomId 2를 가져오는 케이스
-        roomManager.enterAvailableRoom(roomId3, new User("a", "a", roomId3));
-        long roomId4 = roomManager.getRoomId().getAsLong();
-        Assertions.assertThat(roomId4).isEqualTo(2L);
-        //2L room의 user가 가득차 roomId 3L가 반환되는 케이스
-        roomManager.enterWaitingRoom(roomId4, new User("b", "b", roomId4));
-        long roomId5 = roomManager.getRoomId().getAsLong();
-        Assertions.assertThat(roomId5).isEqualTo(3L);
-
-    }
-
-
-    void roomCntValidTest(int availableRoomCnt, int watingRoomsCnt, int fullRoomsCnt) {
-        assertThat(roomManager.getAvailableRoomsCount()).isEqualTo(availableRoomCnt);
-        assertThat(roomManager.getWaitingRoomsCount()).isEqualTo(watingRoomsCnt);
-        assertThat(roomManager.getFullRoomsCount()).isEqualTo(fullRoomsCnt);
-    }
-
-    @Test
     void getAvailableRoomsCount() {
         //default
         Integer availableRoomsCount = roomManager.getAvailableRoomsCount();
@@ -101,17 +70,34 @@ class RoomManagerTest {
     }
 
     @Test
-    void testGetRoomId() {
-        long findRoomId1 = roomManager.getRoomId().getAsLong();
-        assertThat(findRoomId1).isEqualTo(1L);
+    void getRoomId() {
+        //available Rooms에서 roomId를 가져오는 케이스
+        long roomId1 = roomManager.getRoomId().getAsLong();
+        Assertions.assertThat(roomId1).isEqualTo(1L);
+        //waiting rooms에서 roomId를 가져오는 케이스
+        roomManager.enterAvailableRoom(roomId1, new User("a", "a", roomId1));
+        long roomId2 = roomManager.getRoomId().getAsLong();
+        Assertions.assertThat(roomId2).isEqualTo(1L);
+        //1L room의 user가 가득차 roomId 2L가 반환되는 케이스
+        roomManager.enterWaitingRoom(roomId2, new User("b", "b", roomId2));
+        long roomId3 = roomManager.getRoomId().getAsLong();
+        Assertions.assertThat(roomId3).isEqualTo(2L);
+        //waiting rooms에서 roomId 2를 가져오는 케이스
+        roomManager.enterAvailableRoom(roomId3, new User("a", "a", roomId3));
+        long roomId4 = roomManager.getRoomId().getAsLong();
+        Assertions.assertThat(roomId4).isEqualTo(2L);
+        //2L room의 user가 가득차 roomId 3L가 반환되는 케이스
+        roomManager.enterWaitingRoom(roomId4, new User("b", "b", roomId4));
+        long roomId5 = roomManager.getRoomId().getAsLong();
+        Assertions.assertThat(roomId5).isEqualTo(3L);
 
-        roomManager.enterAvailableRoom(findRoomId1, new User());
-        long findRoomId2 = roomManager.getRoomId().getAsLong();
-        assertThat(findRoomId2).isEqualTo(1L);
+    }
 
-        roomManager.enterWaitingRoom(findRoomId2, new User());
-        long findRoomId3 = roomManager.getRoomId().getAsLong();
-        assertThat(findRoomId3).isEqualTo(2L);
+
+    void roomCntValidTest(int availableRoomCnt, int watingRoomsCnt, int fullRoomsCnt) {
+        assertThat(roomManager.getAvailableRoomsCount()).isEqualTo(availableRoomCnt);
+        assertThat(roomManager.getWaitingRoomsCount()).isEqualTo(watingRoomsCnt);
+        assertThat(roomManager.getFullRoomsCount()).isEqualTo(fullRoomsCnt);
     }
 
     @Test
