@@ -44,6 +44,24 @@ public class RoomService {
         return roomManager.getRoomUserCount(roomId);
     }
 
+    public Integer enterRoomForBlueRedControl(Long roomId, User user, int colorNum) {
+
+        if (roomManager.isContainsWaitingRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 watingRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterWaitingRoom(roomId, user);
+
+        } else if (roomManager.isContainsAvailableRooms(roomId)) {
+            log.info("enterRoom() : userName={}이 availableRoom에 입장 roomId={}", user.getName(), roomId);
+            roomManager.enterAvailableRoom(roomId, user);
+        } else {
+            log.info("enterRoom() : userName={} 남은 방이 없음 roomId={}",user.getName(), roomId);
+        }
+        if (colorNum == 1) roomManager.getRoom(roomId).setBlueUser(user);
+        else if (colorNum == 2) roomManager.getRoom(roomId).setRedUser(user);
+
+        return roomManager.getRoomUserCount(roomId);
+    }
+
     public void exitRoom(String sessionId) {
         User findUser = gameUserManager.findBySessionId(sessionId);
         if (findUser == null) {
@@ -72,11 +90,17 @@ public class RoomService {
     }
 
     public String selectRandomStartingPlayer(Long roomId) {
-        List<User> users = roomManager.getRoom(roomId).getUsers();
+        Room findRoom = roomManager.getRoom(roomId);
+        List<User> users = findRoom.getUsers();
         double random = Math.random() * 10;
         System.out.println("random = " + random);
         int randomIndex = (int) (random % 2);
         System.out.println("randomIndex = " + randomIndex);
+        //blue red user저장
+        for (int i = 0; i < 2; i++) {
+            if (randomIndex == i) findRoom.setBlueUser(users.get(i));
+            else findRoom.setRedUser(users.get(i));
+        }
         return users.get(randomIndex).getName();
     }
 
