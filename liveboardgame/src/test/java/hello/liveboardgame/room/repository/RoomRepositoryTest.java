@@ -1,6 +1,7 @@
 package hello.liveboardgame.room.repository;
 
 import hello.liveboardgame.room.domain.Room;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -40,5 +41,17 @@ class RoomRepositoryTest {
 
         //then
         assertEquals(roomEntities.size(), 100);
+    }
+
+    @Test
+    public void resetAll() throws Exception {
+        //given
+        Room findRoom = repository.findById(1L);
+        findRoom.setGameId("a");
+        //when
+        repository.resetAll();
+        //then
+        findRoom = repository.findById(1L);
+        assertThat(findRoom.getGameId()).isNull();
     }
 }
