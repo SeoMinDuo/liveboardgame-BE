@@ -24,7 +24,7 @@ public class GameInfoService {
 
         int x = gameInfoDto.getX();
         int y = gameInfoDto.getY();
-        if (x == -1 && y == -1) return;
+        if ((x == -1 && y == -1) || (x == -2 && y == -2)) return;
 
         Room room = roomManager.getRoom(roomId);
 
