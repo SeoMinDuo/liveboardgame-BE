@@ -75,8 +75,8 @@ public class Room {
             return new GameOutcomeDto(gameInfoDto.getName(), GameResultStatus.NO_ACTION);
         }
         //클라이언트에서 x = -2, y = -2가 넘어올 경우 영토비교 게임결과 반환
-        if (x == -2 || y == -2) {
-            log.info("getGameResult : x==-2, y==-2");
+        if (gameInfoDto.isFull()) {
+            log.info("getGameResult : {}", gameInfoDto.isFull());
             return compareTerritoriesAndReturnWinner(userName, rivalName);
         }
 

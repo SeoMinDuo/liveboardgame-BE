@@ -10,6 +10,7 @@ public class GameInfoDto {
     private int y;
     private String name;
     private int gameState;
+    private boolean full;
 
     public GameInfoDto(int x, int y, String name) {
         this.x = x;
